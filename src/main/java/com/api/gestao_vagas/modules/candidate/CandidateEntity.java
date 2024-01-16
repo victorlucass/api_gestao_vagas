@@ -11,13 +11,10 @@ import java.util.UUID;
 public class CandidateEntity {
     private UUID id;
     private String name;
-
-    @Pattern(regexp = "^(?!\\s*$).+", message = "o campo [username] não deve ter espaços em branco")
+    @Pattern(regexp = "\\S+", message = "o campo [username] não deve ter espaços em branco")
     private String username;
-
     @Email(message = "o campo [email] está inválido")
     private String email;
-
     @Length(min = 10, max = 100)
     private String password;
     private String description;
