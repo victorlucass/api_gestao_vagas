@@ -1,8 +1,8 @@
 package com.api.gestao_vagas.modules.candidate.controllers;
 
 import com.api.gestao_vagas.modules.candidate.CandidateEntity;
-import com.api.gestao_vagas.modules.candidate.CandidateRepository;
 import com.api.gestao_vagas.modules.candidate.exceptions.UserFoundException;
+import com.api.gestao_vagas.modules.candidate.services.CandidateService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,22 +16,22 @@ import java.util.List;
 public class CandidateController {
 
     @Autowired
-    private CandidateRepository repository;
+    private CandidateService service;
 
     @GetMapping
     public ResponseEntity<List<CandidateEntity>> getCandidate() {
-        List<CandidateEntity> list = repository.findAll();
+        List<CandidateEntity> list = service.listAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @PostMapping
-    public void create(@Valid @RequestBody CandidateEntity candidate) {
-        this.repository.findByUsernameOrEmail(candidate.getUsername(), candidate.getEmail()).ifPresent(
-                (user) -> {
-                    throw new UserFoundException();
-                }
-        );
-        this.repository.save(candidate);
+    public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidate) {
+        try {
+            CandidateEntity newCandidate = this.service.create(candidate);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newCandidate);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
