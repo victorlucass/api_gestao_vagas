@@ -19,7 +19,7 @@ public class CandidateService {
     public CandidateEntity create(CandidateEntity candidate) {
         this.repository.findByUsernameOrEmail(candidate.getUsername(), candidate.getEmail()).ifPresent(
                 (user) -> {
-                    throw new UserFoundException(user);
+                    throw new UserFoundException();
                 }
         );
         return this.repository.save(candidate);
